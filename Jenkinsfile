@@ -1,9 +1,20 @@
 pipeline{
     agent any
     stages{
-        stage('Git config'){
+        stage('server ip'){
             steps{
-                git branch : 'Jenkins', url: 'https://github.com/GunaranjanV/Practice_day22.git'
+                sh '''
+                hostname -I
+                echo "server ip : $(hostname -I)"
+                '''
+            }
+        }
+        stage('uptime'){
+            steps{
+                sh '''
+                uptime
+                echo "uptime is : $(uptime)"
+            '''
             }
         }
     }
