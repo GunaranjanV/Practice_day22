@@ -6,7 +6,6 @@ pipeline{
         stage('server ip'){
             steps{
                 sh '''
-                hostname -I
                 echo "server ip : $(hostname -I)"
                 '''
             }
@@ -14,7 +13,6 @@ pipeline{
         stage('uptime'){
             steps{
                 sh '''
-                uptime
                 echo "uptime is : $(uptime)"
             '''
             }
