@@ -1,5 +1,6 @@
 pipeline{
-    agent any
+    agent any{
+        label 'slave'}
     stages{
         stage('server ip'){
             steps{
