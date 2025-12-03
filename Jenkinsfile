@@ -9,7 +9,7 @@ pipeline{
 	stages{
 		stage('Git checkout'){
 			steps{
-				git branch: 'verion-1', url: 'https://github.com/ManojKRISHNAPPA/test-1.git'
+				git branch: 'Jenkins', url: 'https://github.com/GunaranjanV/Practice_day22.git'
 			}
 		}
 		stage('Compile'){
@@ -22,25 +22,7 @@ pipeline{
 				sh 'mvn clean install'
 			}
 		}
-		stage('Compile'){
-			steps{
-				sh 'mvn compile'
-			}
-		}
-		stage('Building-DockerImage'){
-			steps{
-				sh 'docker build -t manojkrishnappa/continous-intergartion:1 .'
-			}
-		}
-
-		stage('Contianersation'){
-			sh '''
-				docker stop c1 || true
-				docker rm c1 || true
-				docker run -it -d --name c1 -p 9000:8080 manojkrishnappa/continous-intergartion:1
-
-			'''	
-		}
-
+		
 	}
+
 }
