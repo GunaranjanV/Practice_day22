@@ -1,67 +1,65 @@
 pipeline {
     agent any
 
-    tools {
+    tools{
         jdk 'java11'
         maven 'maven'
     }
 
     stages {
-        stage('Git checkout') {
-            steps {
-                git branch: 'practice', url: 'https://github.com/GunaranjanV/Practice_day22.git'
+        stage('Git checkout'){
+            steps{
+            git branch: 'final_project', url: 'https://github.com/GunaranjanV/Practice_day22.git'
             }
         }
-
-        stage('Compile') {
-            steps {
+        stage('Maven compile'){
+            steps{
                 sh 'mvn compile'
             }
         }
-
-        stage('Maven build') {
-            steps {
+        stage('Maven Build'){
+            steps{
                 sh 'mvn clean install'
             }
         }
-
-        stage('Docker image creation') {
-            steps {
-                sh 'docker build -t gunaranjanv/ci:1 .'
-            }
-        }
-		stage('Docker image scan') {
-            steps {
-                sh "trivy image --format table -o trivy-image-report.html gunaranjanv/ci:1"
+        stage('Docker image creation'){
+            steps{
+                sh 'docker build -t gunaranjanv/website:1 .'
             }
         }
 
-        stage('Docker containerization') {
-            steps {
+        stage('Docker Image scan'){
+            steps{
+                sh 'trivy image --format table -o trivy-image-report.html gunaranjanv/website:1'
+            }
+        }
+        stage('Docker Containerization'){
+            steps{
                 sh '''
-                    docker stop website || true
-                    docker rm website || true
-                    docker run -it -d --name website -p 9000:8080 gunaranjanv/ci:1
-                '''
+                    docker stop gunaranjanv/website:1 || true
+                    docker rm gunaranjanv/website:1 || true
+                    docker run -it -d --name new_website -p 9001:8080 gunaranjanv/website:1
+                    '''
             }
         }
-		stage('Login to Docker Hub') {
-    		steps {
-        		script {
-            		withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
-                    	    	                      usernameVariable: 'DOCKER_USERNAME', 
-                        	    	                  passwordVariable: 'DOCKER_PASSWORD')]) 
-					{
-                	sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-            		}
-        			}
-    			}
-		}
-		stage('docker push to repo'){
-			steps{
-			sh 'docker push gunaranjanv/ci:1'
-			}
-		}
-    }
-}
+        stage('Docker login'){
+            steps{
+                script{
+                    withCredentials([usernamePassword(credentialsId='docker-credentials',
+                                                        usernameVariable='DOCKER_USERNAME'
+                                                        passwordVariable='DOCKER_PASSWORD')]){
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                                                        }
+                }
+                
+            }
+        }
+        stage('Docker push'){
+            steps{
+                sh 'docker push gunaranjanv/website:1'
+            }
+        }
 
+    }
+
+}
