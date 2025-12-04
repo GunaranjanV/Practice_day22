@@ -46,9 +46,9 @@ pipeline {
             }
         }
 		stage('Login to Docker Hub') {
-    	steps {
-        	script {
-            	withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
+    		steps {
+        		script {
+            		withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', 
                     	    	                      usernameVariable: 'DOCKER_USERNAME', 
                         	    	                  passwordVariable: 'DOCKER_PASSWORD')]) 
 					{
@@ -57,9 +57,11 @@ pipeline {
         			}
     			}
 		}
-		stage('docker push to repo')
-		steps{
+		stage('docker push to repo'){
+			steps{
 			sh 'docker push guna/CI:1'
+			}
 		}
     }
 }
+
