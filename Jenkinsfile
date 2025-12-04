@@ -27,12 +27,12 @@ pipeline {
 
         stage('Docker image creation') {
             steps {
-                sh 'docker build -t guna/CI:1 .'
+                sh 'docker build -t guna/ci:1 .'
             }
         }
 		stage('Docker image scan') {
             steps {
-                sh "trivy image --format table -o trivy-image-report.html guna/CI:1"
+                sh "trivy image --format table -o trivy-image-report.html guna/ci:1"
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
                 sh '''
                     docker stop website || true
                     docker rm website || true
-                    docker run -it -d --name website -p 9000:8080 guna/CI:1
+                    docker run -it -d --name website -p 9000:8080 guna/ci:1
                 '''
             }
         }
@@ -59,7 +59,7 @@ pipeline {
 		}
 		stage('docker push to repo'){
 			steps{
-			sh 'docker push guna/CI:1'
+			sh 'docker push guna/ci:1'
 			}
 		}
     }
