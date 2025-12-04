@@ -30,6 +30,11 @@ pipeline {
                 sh 'docker build -t guna/CI:1 .'
             }
         }
+		stage('Docker image scan') {
+            steps {
+                sh "trivy image --format table -o trivy-image-report.html guna/CI:1"
+            }
+        }
 
         stage('Docker containerization') {
             steps {
